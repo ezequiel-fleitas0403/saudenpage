@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AMORI – Piezas de moda atemporal premium con experiencia tecnológica y minimalista." />
+  <title>AMORI - Moda Atemporal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pIV6+QZ7q+ElFv+2QHhJ3w3eqUe3j3s2vB+RQtDY4UvIuO+akzL5rHfU1eOQd7O3S5X2JVhb8eZ7w5Y+YPOGw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+    
+    /* Reset and global */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { 
+      font-family: 'Impact', sans-serif; 
+      background: #0a0a0a; 
+      color: #fff; 
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 20px; height: 20px; border: 2px solid #fff;
+      border-radius: 50%; position: fixed; pointer-events: none;
+      z-index: 9999; transition: all 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor.hover { 
+      width: 40px; height: 40px; 
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Header */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: 5rem;
+      padding: 0 3rem; z-index: 1000;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.3s ease;
+    }
+    .header-scrolled {
+      height: 4rem; background: rgba(10,10,10,0.98);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem; font-weight: 700;
+      background: linear-gradient(135deg, #fff, #ccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 3px;
+      transition: all 0.3s ease;
+    }
+    .logo:hover {
+      background: linear-gradient(135deg, #fff, #888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav a {
+      color: #fff; text-decoration: none; position: relative; 
+      font-size: 1rem; font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    nav a::after {
+      content: '';
+      position: absolute; bottom: -8px; left: 50%;
+      width: 0; height: 2px; 
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    nav a:hover::after { width: 100%; }
+    nav a:hover { color: #ccc; }
+
+    /* Progress bar */
+    #progress {
+      position: fixed; top: 0; left: 0; width: 0; height: 3px;
+      background: linear-gradient(90deg, #fff, #ccc);
+      z-index: 1001; transition: width 0.1s ease-out;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -2; overflow: hidden;
+    }
+    .floating-element {
+      position: absolute; width: 2px; height: 2px;
+      background: rgba(255,255,255,0.3);
+      animation: float 20s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Main sections */
+    main { padding-top: 5rem; }
+    section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 4rem 2rem; position: relative;
+    }
+
+    /* Hero section */
+    .hero {
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .hero h1 {
+      font-family: 'Impact', serif;
+      font-size: clamp(4rem, 12vw, 12rem);
+      font-weight: 700; text-align: center;
+      background: linear-gradient(135deg, #fff 0%, #ccc 50%, #fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transform: scale(1.2, 2.8); /* Estira horizontalmente y comprime verticalmente */
+      display: inline-block; /* Necesario para que scaleX y scaleY funcionen correctamente */
+      letter-spacing: 8px;
+      animation: heroGlow 2s ease-in-out infinite alternate;
+      text-shadow: 0 0 50px rgba(255,255,255,0.3);
+    }
+    @keyframes heroGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.2); }
+    }
+    .hero-subtitle {
+      font-size: 1.2rem; margin-top: 1rem; opacity: 0.8;
+      font-weight: 300; letter-spacing: 2px;
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      opacity: 0;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 600; margin-bottom: 3rem;
+      text-align: center; position: relative;
+      background: linear-gradient(135deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute; bottom: -10px; left: 50%;
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      transform: translateX(-50%);
+    }
+
+    /* Collections */
+    #colecciones {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    }
+    .collections-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem; width: 100%; max-width: 1000px;
+    }
+    .collection-card {
+      height: 250px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 600; letter-spacing: 2px;
+      position: relative; overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .collection-card::before {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: all 0.6s ease;
+    }
+    .collection-card:hover::before {
+      left: 100%;
+    }
+    .collection-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* Products */
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem; width: 100%; max-width: 1200px;
+    }
+    .product-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer; position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .product-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .product-card:hover::before { opacity: 1; }
+    .product-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+      border-color: rgba(255,255,255,0.3);
+    }
+    .product-image {
+      width: 100%; height: 200px; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover .product-image {
+      transform: scale(1.1);
+    }
+    .product-content {
+      padding: 1.5rem;
+    }
+    .product-title {
+      font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem;
+    }
+    .product-price {
+      font-size: 1.2rem; color: #ccc; font-weight: 500;
+    }
+
+    /* About section */
+    #sobre {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+    }
+    .about-text {
+      text-align: center; max-width: 700px; font-size: 1.2rem;
+      line-height: 1.8; font-weight: 300; opacity: 0.9;
+    }
+
+    /* Contact form */
+    .contact-form {
+      display: flex; flex-direction: column; gap: 1.5rem;
+      width: 100%; max-width: 500px;
+    }
+    .form-group {
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .form-group label {
+      font-size: 0.9rem; font-weight: 500; color: #ccc;
+    }
+    .form-group input, .form-group textarea {
+      padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; background: rgba(255,255,255,0.05);
+      color: #fff; font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none; border-color: #fff;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+    .submit-btn {
+      padding: 1.2rem 2rem; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #fff, #ccc);
+      color: #0a0a0a; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.3s ease;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.3);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 3rem 2rem; 
+      background: rgba(255,255,255,0.02);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .social-links {
+      display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;
+    }
+    .social-links a {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    .social-links a:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-5px);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeInUp 0.8s ease-out forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { padding: 0 1.5rem; }
+      .logo { font-size: 2rem; }
+      nav ul { gap: 1rem; }
+      section { padding: 2rem 1rem; }
+      .collections-grid, .products-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0; transform: translateY(50px);
+      transition: all 0.6s ease;
+    }
+    .reveal.active {
+      opacity: 1; transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+  <div id="progress"></div>
+  
+  <!-- Animated background -->
+  <div class="bg-animation"></div>
+
+  <header id="header">
+    <div class="logo">AMORI</div>
+    <nav>
+      <ul>
+        <li><a href="#colecciones">Colecciones</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+  <canvas id="binaryRain"></canvas>
+  <h1>AMORI</h1>
+  
+</section>
+
+
+    <section id="colecciones" class="reveal">
+      <h2 class="section-title">Colecciones</h2>
+      <div class="collections-grid">
+        <div class="collection-card">Essential</div>
+        <div class="collection-card">Formal</div>
+        <div class="collection-card">Casual</div>
+      </div>
+    </section>
+
+    <section id="productos" class="reveal">
+      <h2 class="section-title">Productos Destacados</h2>
+      <div class="products-grid">
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&h=300&fit=crop" alt="Camisa Clásica" class="product-image" />
+          <div class="product-content">
+            <div class="product-title">Camisa Clásica</div>
+            <div class="product-price">$89.99</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=300&fit=crop" alt="Pantalón Slim Fit" class="product-image" />
+          <div class="product-content">
+            <div class="product-title">Pantalón Slim Fit</div>
+            <div class="product-price">$129.99</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=300&fit=crop" alt="Vestido Negro" class="product-image" />
+          <div class="product-content">
+            <div class="product-title">Vestido Negro</div>
+            <div class="product-price">$159.99</div>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=300&fit=crop" alt="Blazer Blanco" class="product-image" />
+          <div class="product-content">
+            <div class="product-title">Blazer Blanco</div>
+            <div class="product-price">$199.99</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre" class="reveal">
+      <h2 class="section-title">Sobre Nosotros</h2>
+      <p class="about-text">En AMORI, creamos piezas versátiles que trascienden las tendencias temporales. Nuestra filosofía se fundamenta en la excelencia artesanal, la elegancia intemporal y el diseño consciente que perdura a través de las generaciones.</p>
+    </section>
+
+    <section id="contacto" class="reveal">
+      <h2 class="section-title">Contacto</h2>
+      <form class="contact-form">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input id="email" type="email" placeholder="tu@correo.com" required />
+        </div>
+        <div class="form-group">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" rows="4" placeholder="Escribe tu mensaje..." required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Enviar Mensaje</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="social-links">
+      <a href="https://instagram.com/amori" target="_blank" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://twitter.com/amori" target="_blank" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://tiktok.com/@amori" target="_blank" aria-label="TikTok">
+        <i class="fab fa-tiktok"></i>
+      </a>
+    </div>
+    <p>&copy; 2025 AMORI. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.querySelector('.cursor');
+    const header = document.getElementById('header');
+    
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '1';
+    });
+    
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+    });
+
+    // Cursor hover effects
+    const hoverElements = document.querySelectorAll('a, button, .collection-card, .product-card');
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // Scroll progress
+    const progress = document.getElementById('progress');
+    window.addEventListener('scroll', () => {
+      const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      progress.style.width = scrolled + '%';
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+    });
+
+    // Floating background elements
+    function createFloatingElements() {
+      const bgAnimation = document.querySelector('.bg-animation');
+      for (let i = 0; i < 50; i++) {
+        const element = document.createElement('div');
+        element.className = 'floating-element';
+        element.style.left = Math.random() * 100 + '%';
+        element.style.animationDelay = Math.random() * 20 + 's';
+        element.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        bgAnimation.appendChild(element);
+      }
+    }
+    createFloatingElements();
+
+    // Scroll reveal animation
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Form submission
+    document.querySelector('.contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('.submit-btn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.textContent = 'Mensaje Enviado ✓';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+          this.reset();
+        }, 2000);
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
